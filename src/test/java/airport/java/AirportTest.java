@@ -25,6 +25,8 @@ public class AirportTest
 	
 	@Mock
 	Plane planeA;
+	Plane planeB;
+	Weather weather;
 	
 //	@BeforeEach
 //	public void init() {
@@ -38,10 +40,44 @@ public class AirportTest
     }
     
     @Test
-    public void itShouldTellPlaneToLand() {
+    public void itShouldTellPlaneToLand() throws CustomException {
     	ArrayList<Plane> testHangar = new ArrayList<Plane>(1);
     	testHangar.add(planeA);
+    	
     	airport.land(planeA);
     	assertIterableEquals(testHangar, airport.hangar());
+    }
+    
+    @Test
+    public void shouldTellPlaneToTakeOff() throws CustomException {
+    	airport.land(planeA);
+    	airport.takeOff(planeA);
+    	assertTrue(airport.hangar().isEmpty());
+    }
+    
+    @Test
+    public void shouldThrowErrorAtMaximumCapacity() throws CustomException {
+    	airport.land(planeA);
+//    	doThrow (CustomException.class).when(airport).land(planeB);
+    	CustomException landingException = assertThrows(CustomException.class, () -> airport.land(planeB));
+    	assertEquals("Cannot land plane, hangar full", landingException.getMessage());
+//    	
+    	
+    }
+    
+    @Test
+    public void shouldHaveDefaultAndOverridableCapacity() {
+    	Airport defaultSizeAirport = new Airport();
+    	Airport largerSizeAirport = new Airport(100);
+    	assertEquals(1, defaultSizeAirport.airportCapacity);
+    	assertEquals(100, largerSizeAirport.airportCapacity);
+    }
+    
+    @Test
+    public void shouldNotAllowLandingIfStormy() {
+    	when(weather.isStormy()).thenReturn(true);
+//    	airport.land(planeA);
+    	CustomException landingException = assertThrows(CustomException.class, () -> airport.land(planeA));
+    	assertEquals("Cannot land plane, it's bloody windy!", landingException.getMessage());
     }
 }
