@@ -50,14 +50,19 @@ public class Airport
     	airportCapacity = defaultCapacity;
     }
     
+//    public Airport(Weather weather) {
+//    	this.weather = weather;
+//    	System.out.println(weather);
+//    }
+    
     public ArrayList<Plane> hangar() {
     	System.out.println(hangar + "in hangar");
     	return hangar;
     }
     
     public void land(Plane plane) throws CustomException {
-    	if (hangar.size() >= airportCapacity) throw new CustomException("Cannot land plane, hangar full");
     	if (weather.isStormy()) throw new CustomException("Cannot land plane, it's bloody windy!");
+    	if (hangar.size() >= airportCapacity) throw new CustomException("Cannot land plane, hangar full");
     	hangar.add(plane);
 //        System.out.println(hangar + "landed!");
     }
