@@ -9,7 +9,7 @@ public class Weather {
 	
 	public boolean isStormy() {
 		if (Math.random() > 0.9) { return true; } 
-		return false;
+		else { return false; }
 	}
 
 }

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
@@ -24,6 +25,7 @@ public class AirportTest
 	
 //	Airport airport = new Airport();
 	private Airport airport;
+	private Airport stormyAirport;
 	
 	@Mock
 	Plane planeA;
@@ -33,9 +35,8 @@ public class AirportTest
 	@BeforeEach
 	public void init() {		
 		weather = Mockito.mock(Weather.class);
-		airport = new Airport();
-//		when(weather.isStormy()).thenReturn(false);
-		
+		airport = new Airport(weather);
+		when(weather.isStormy()).thenReturn(false);
 	}
 	
     @Test
@@ -49,7 +50,7 @@ public class AirportTest
     	ArrayList<Plane> testHangar = new ArrayList<Plane>(1);
     	testHangar.add(planeA);
     	
-    	when(weather.isStormy()).thenReturn(false);
+//    	when(weather.isStormy()).thenReturn(false);
     	airport.land(planeA);
     	assertIterableEquals(testHangar, airport.hangar());
     }
@@ -79,12 +80,16 @@ public class AirportTest
     	assertEquals(100, largerSizeAirport.airportCapacity);
     }
     
+ 
     @Test
     public void shouldNotAllowLandingIfStormy() throws CustomException {
     	when(weather.isStormy()).thenReturn(true);
-//    	airport.land(planeA);
-    	assertEquals(weather.isStormy(), true);
-    	CustomException stormyException = assertThrows(CustomException.class, () -> airport.land(planeA));
+    	stormyAirport = new Airport(weather);
+    	
+    	CustomException stormyException = assertThrows(CustomException.class, () -> { 
+    		stormyAirport.land(planeA);
+    	});
     	assertEquals("Cannot land plane, it's bloody windy!", stormyException.getMessage());
     }
+    
 }

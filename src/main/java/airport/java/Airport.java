@@ -13,7 +13,9 @@ public class Airport
 	
 	private final Integer defaultCapacity = 1;
 	public int airportCapacity;
-	public Weather weather = new Weather();
+	public Weather weather;
+	public CustomException stormException = new CustomException("Cannot land plane, it's bloody windy!");
+	public CustomException hangarException = new CustomException("Cannot land plane, hangar full");
 	
 	public static void main( String[] args )
     {
@@ -44,16 +46,19 @@ public class Airport
     
     public Airport(int capacity) {
     	airportCapacity = capacity;
+    	this.weather = new Weather();
     }
     
     public Airport() {
     	airportCapacity = defaultCapacity;
+    	this.weather = new Weather();
     }
     
-//    public Airport(Weather weather) {
-//    	this.weather = weather;
-//    	System.out.println(weather);
-//    }
+    public Airport(Weather weather) {
+    	airportCapacity = defaultCapacity;
+    	this.weather = weather;
+    	System.out.println(weather);
+    }
     
     public ArrayList<Plane> hangar() {
     	System.out.println(hangar + "in hangar");
@@ -61,15 +66,17 @@ public class Airport
     }
     
     public void land(Plane plane) throws CustomException {
-    	if (weather.isStormy()) throw new CustomException("Cannot land plane, it's bloody windy!");
-    	if (hangar.size() >= airportCapacity) throw new CustomException("Cannot land plane, hangar full");
+    	if (weather.isStormy() == true) {
+    		throw stormException;
+    	} else if (hangar.size() >= airportCapacity) {
+    		throw hangarException;
+    	} else {
     	hangar.add(plane);
-//        System.out.println(hangar + "landed!");
+    	}
     }
     
     public void takeOff(Plane plane) {
     	hangar.remove(plane);
-//    	System.out.println(hangar + "in takeOff");
     }
 }
 
